@@ -13,9 +13,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class TransactionDTO {
+  //  private Long transactionId;
     private Long senderId;
     private Long receiverId;
     private BigDecimal amount;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+  //  private LocalDateTime createdAt;
+   // private LocalDateTime updatedAt;
 }
