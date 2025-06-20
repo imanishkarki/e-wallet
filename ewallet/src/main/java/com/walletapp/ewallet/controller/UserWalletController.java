@@ -1,4 +1,5 @@
 package com.walletapp.ewallet.controller;
+import com.walletapp.ewallet.enums.StatusEnum;
 import com.walletapp.ewallet.model.ApiResponse;
 import com.walletapp.ewallet.payload.UserWalletDTO;
 import com.walletapp.ewallet.service.UserWalletService;
@@ -20,13 +21,14 @@ public class UserWalletController {
         return ResponseEntity.ok(ewalletService.createUserWalletDTO(userWalletDTO));
     }
 
-
-
     @PostMapping("/load/{id}")
     public ResponseEntity<ApiResponse> loadUserWallet(@PathVariable Long id, @RequestBody BigDecimal balanceToAdd){
         return ResponseEntity.ok(ewalletService.loadUserWalletDTO(id, balanceToAdd));
     }
-
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ApiResponse> deleteUserWalletById(@PathVariable Long id){
+        return ResponseEntity.ok(ewalletService.deleteUserWalletById(id));
+    }
 
     @GetMapping
     public List<UserWalletDTO> getAllUserWallet(){
@@ -36,5 +38,13 @@ public class UserWalletController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getUserWalletByIdDTO(@PathVariable  Long id){
         return ResponseEntity.ok(ewalletService.getUserWalletByIdDTO(id));
+    }
+    @GetMapping("/active")
+    public ResponseEntity<ApiResponse> getActiveUserWalletsDTO() {
+        return ResponseEntity.ok(ewalletService.getAllActiveUserWalletsDTO(StatusEnum.ACTIVE));
+    }
+    @GetMapping("/inactive")
+    public ResponseEntity<ApiResponse> getInactiveUserWalletsDTO() {
+        return ResponseEntity.ok(ewalletService.getAllInactiveUserWalletsDTO(StatusEnum.INACTIVE));
     }
 }

@@ -1,10 +1,12 @@
 package com.walletapp.ewallet.entity;
 
+import com.walletapp.ewallet.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.catalina.User;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -22,12 +24,16 @@ public class Transaction {
 
     @ManyToOne
     @JoinColumn(name= "sender_id", referencedColumnName = "id")
-    private Long senderId;
+    private UserWallet senderId;
 
     @ManyToOne
     @JoinColumn(name = "receiver_id",referencedColumnName = "id")
-    private Long receiverId;
+    private UserWallet receiverId;
     private BigDecimal amount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    @Enumerated(EnumType.STRING)
+    private StatusEnum status;
+
 }

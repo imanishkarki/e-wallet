@@ -17,6 +17,7 @@ public class TransactionDTO {
     private Long senderId;
     private Long receiverId;
     private BigDecimal amount;
+
   //  private LocalDateTime createdAt;
    // private LocalDateTime updatedAt;
 }

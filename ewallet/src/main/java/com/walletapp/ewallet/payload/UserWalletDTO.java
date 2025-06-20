@@ -14,5 +14,6 @@ public class UserWalletDTO {
     private String name;
     private Long phoneNumber;
     private BigDecimal balance;
+   // private StatusEnum status;
 
 }
