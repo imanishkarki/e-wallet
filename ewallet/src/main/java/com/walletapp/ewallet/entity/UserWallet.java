@@ -28,6 +28,8 @@ public class UserWallet {
 
     @Enumerated(EnumType.STRING)
     private StatusEnum status;
+
+    @OneToOne
+    @JoinColumn(name="user_id", referencedColumnName = "id")
+    private  User user;
 }
-
-

@@ -18,17 +18,13 @@ public class GlobalExpHandler {
 
     @ExceptionHandler(IdNotFoundException.class)
     public ResponseEntity<ErrorResponse> idNotFoundExceptionHandler(IdNotFoundException infe, WebRequest wer){
-        ErrorResponse erp =new ErrorResponse(infe.getMessage(),wer.getDescription(false),"Either sender or receiver Id is not found",false);
+        ErrorResponse erp = new ErrorResponse(infe.getMessage(),wer.getDescription(false),"Either sender or receiver Id is not found",false);
         return new ResponseEntity<ErrorResponse>(erp, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(NoSuchElementException.class)
-
     public ResponseEntity<ErrorResponse> noSuchIdExceptionHandler(NoSuchElementException nsi, WebRequest wer){
         ErrorResponse erp =new ErrorResponse(nsi.getMessage(),wer.getDescription(false),"User doesn't exists with this Id",false);
         return new ResponseEntity<ErrorResponse>(erp, HttpStatus.NOT_FOUND);
     }
-
-
-
 }
