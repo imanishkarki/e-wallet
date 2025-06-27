@@ -1,9 +1,9 @@
 package com.walletapp.ewallet.service;
 
-import com.walletapp.ewallet.model.ApiResponse;
-import com.walletapp.ewallet.payload.UserDTO;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public interface UserService {
-    ApiResponse createUser(UserDTO userDTO);
+    UserDetails loadUserByUsername(String username) throws Exception;
+
 
 }
