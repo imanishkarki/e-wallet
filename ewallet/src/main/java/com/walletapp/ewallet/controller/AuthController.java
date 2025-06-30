@@ -3,13 +3,12 @@ import com.walletapp.ewallet.entity.User;
 import com.walletapp.ewallet.payload.LoginDTO;
 import com.walletapp.ewallet.repository.UserRepository;
 import com.walletapp.ewallet.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -58,6 +57,11 @@ public class AuthController {
         }
 
         return ResponseEntity.ok("Login successful");
+    }
+
+    @GetMapping("/csrf")
+    public CsrfToken getCsrfToken(HttpServletRequest request){
+       return (CsrfToken) request.getAttribute("_csrf");
     }
 
 

@@ -5,28 +5,31 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
     //this adds the basic authentication filter to the application instead of the default form login filter
     @Bean
-    public  SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public  SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
-        http
-        .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/user","/api/user/login").permitAll()
-                .anyRequest().authenticated())
-        .httpBasic(withDefaults());
-    return http.build();
+        httpSecurity
+        .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/user/signup", "/api/user/login").permitAll()
+                        .anyRequest().authenticated())
+                .formLogin(Customizer.withDefaults())
+        .httpBasic(Customizer.withDefaults());
+    return httpSecurity.build();
     }
     @Bean
     public UserDetailsService userDetailsService(){
