@@ -1,38 +1,41 @@
 package com.walletapp.ewallet.service.serviceImpl;
 
-import com.walletapp.ewallet.config.CustomUserDetails;
-import com.walletapp.ewallet.entity.User;
+import com.walletapp.ewallet.payload.LoginDTO;
 import com.walletapp.ewallet.repository.UserRepository;
 import com.walletapp.ewallet.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+@Service
+public class UserServiceImpl implements UserService {
 
-@Component
-public class UserServiceImpl implements UserService, UserDetailsService {
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-
-
+    public UserServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder, UserRepository userRepository, AuthenticationManager authenticationManager, JwtService jwtService) {
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.userRepository = userRepository;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+    }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public String verify(LoginDTO loginDTO) {
 
-        return new CustomUserDetails(user);
+        Authentication authenticate
+                = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
+        //if(userRepository.findByUsername(loginDTO.getUsername()).isPresent()){
+        if (authenticate.isAuthenticated()) {
+            return jwtService.generateToken(loginDTO);
+        }else{
+            return "failure";
+        }
     }
+
 }
-
-

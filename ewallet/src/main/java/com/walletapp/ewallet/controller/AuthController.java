@@ -43,20 +43,19 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO) {
-        Optional<User> userOptional = userRepository.findByUsername(loginDTO.getUsername());
+    public String login(@RequestBody LoginDTO loginDTO) {
+//        Optional<User> userOptional = userRepository.findByUsername(loginDTO.getUsername());
+//        if (userOptional.isEmpty()) {
+//            return ResponseEntity.status(401).body("Invalid username or password");
+//        }
+//        User user = userOptional.get();
+//        if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
+//            return ResponseEntity.status(401).body("Invalid username or password");
+//        }
+        return userService.verify(loginDTO);
 
-        if (userOptional.isEmpty()) {
-            return ResponseEntity.status(401).body("Invalid username or password");
-        }
 
-        User user = userOptional.get();
-
-        if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
-            return ResponseEntity.status(401).body("Invalid username or password");
-        }
-
-        return ResponseEntity.ok("Login successful");
+        //return ResponseEntity.ok("Login successful");
     }
 
     @GetMapping("/csrf")
