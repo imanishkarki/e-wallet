@@ -10,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/user")
@@ -18,9 +17,6 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private UserRepository userRepositiry;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -44,24 +40,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public String login(@RequestBody LoginDTO loginDTO) {
-//        Optional<User> userOptional = userRepository.findByUsername(loginDTO.getUsername());
-//        if (userOptional.isEmpty()) {
-//            return ResponseEntity.status(401).body("Invalid username or password");
-//        }
-//        User user = userOptional.get();
-//        if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
-//            return ResponseEntity.status(401).body("Invalid username or password");
-//        }
         return userService.verify(loginDTO);
-
-
-        //return ResponseEntity.ok("Login successful");
     }
 
-    @GetMapping("/csrf")
-    public CsrfToken getCsrfToken(HttpServletRequest request){
-       return (CsrfToken) request.getAttribute("_csrf");
-    }
 
 
 }

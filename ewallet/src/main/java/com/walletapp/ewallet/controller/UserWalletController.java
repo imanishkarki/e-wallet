@@ -5,6 +5,7 @@ import com.walletapp.ewallet.payload.UserWalletDTO;
 import com.walletapp.ewallet.service.UserWalletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -39,6 +40,7 @@ public class UserWalletController {
     public ResponseEntity<ApiResponse> getUserWalletByIdDTO(@PathVariable  Long id){
         return ResponseEntity.ok(ewalletService.getUserWalletByIdDTO(id));
     }
+
     @GetMapping("/active")
     public ResponseEntity<ApiResponse> getActiveUserWalletsDTO() {
         return ResponseEntity.ok(ewalletService.getAllActiveUserWalletsDTO(StatusEnum.ACTIVE));
@@ -46,5 +48,10 @@ public class UserWalletController {
     @GetMapping("/inactive")
     public ResponseEntity<ApiResponse> getInactiveUserWalletsDTO() {
         return ResponseEntity.ok(ewalletService.getAllInactiveUserWalletsDTO(StatusEnum.INACTIVE));
+    }
+
+    @GetMapping("/test")
+    public String test(){
+        return "Test endpoint is working!";
     }
 }

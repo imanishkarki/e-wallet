@@ -1,17 +1,21 @@
-package com.walletapp.ewallet.config;
+package com.walletapp.ewallet.service;
 import com.walletapp.ewallet.entity.User;
+import lombok.Builder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
+@Builder
 public class CustomUserDetails implements UserDetails {
 
-    private final User user;
+    private  User user;
 
     public CustomUserDetails(User user) {
         this.user = user;
+    }
+    public CustomUserDetails() {
     }
 
     @Override
@@ -48,4 +52,6 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }
+
