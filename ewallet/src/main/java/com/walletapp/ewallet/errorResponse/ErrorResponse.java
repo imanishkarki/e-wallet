@@ -19,13 +19,11 @@ public class ErrorResponse {
     String errorDetails;
     String errorCode;
     Boolean success;
-//    HttpStatus httpStatus;
     public ErrorResponse( String message, String errorDetails, String errorCode, Boolean success) {
        this.timestamp = LocalDateTime.now();
         this.message = message;
         this.errorDetails = errorDetails;
         this.errorCode = errorCode;
         this.success = success;
-     //   this.httpStatus = httpStatus;
     }
 }

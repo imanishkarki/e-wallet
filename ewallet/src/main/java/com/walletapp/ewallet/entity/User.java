@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,11 +23,13 @@ public class User implements UserDetails {
     private String name;
     @Column(unique = true)
     private Long phoneNumber;
+
+    private BigDecimal balance = BigDecimal.ZERO;
     //private String email;
     private String password;
     @Column(unique= true)
     private String username;
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     private UserWallet userWallet;
 
     @Override

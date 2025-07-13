@@ -3,6 +3,7 @@ package com.walletapp.ewallet.entity;
 import com.walletapp.ewallet.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,9 +14,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserWallet {
+@Builder
+public class  UserWallet {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String name;
     private Long phoneNumber;
@@ -30,6 +31,7 @@ public class UserWallet {
     private StatusEnum status;
 
     @OneToOne
-    @JoinColumn(name="user_id", referencedColumnName = "id")
+    @MapsId
+    @JoinColumn(name="id")
     private  User user;
 }

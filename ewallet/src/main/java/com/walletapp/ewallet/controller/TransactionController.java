@@ -1,14 +1,22 @@
 package com.walletapp.ewallet.controller;
 
+import com.walletapp.ewallet.entity.Transaction;
+import com.walletapp.ewallet.entity.User;
+import com.walletapp.ewallet.entity.UserWallet;
+import com.walletapp.ewallet.globalExceptionHandler.IdNotFoundException;
 import com.walletapp.ewallet.model.ApiResponse;
 import com.walletapp.ewallet.payload.TransactionDTO;
+import com.walletapp.ewallet.repository.TransactionRepository;
+import com.walletapp.ewallet.repository.UserWalletRepository;
+import com.walletapp.ewallet.service.CustomUserDetails;
 import com.walletapp.ewallet.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/transaction")
@@ -17,11 +25,38 @@ public class TransactionController {
     @Autowired
     private TransactionService transactionService;
 
+    @Autowired
+    private UserWalletRepository userWalletRepository;
+
+    @Autowired
+    private TransactionRepository transactionRepository;
+
     @PostMapping
     public ResponseEntity<ApiResponse> createTransactionDTO(@RequestBody  TransactionDTO transactionDTO){
 
         return ResponseEntity.ok( transactionService.createTransactionDTO( transactionDTO));
     }
 
+    @GetMapping("/get/{id}")
+    public List<TransactionDTO> getTransactionByIdDTO(@PathVariable Long id) {
 
+
+        return transactionService.getTransactionByIdDTO(id);
+    }
+
+    @GetMapping("/get")
+    public List<TransactionDTO> getTransactionStatement() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+        User liggedInUser = userDetails.getUser();
+        UserWallet wallet = liggedInUser.getUserWallet();
+        List<Transaction> transaction = transactionRepository.findByWalletId(wallet.getId());
+        return transaction.stream()
+                .map(t -> new TransactionDTO(
+                        t.getSenderId().getId(),
+                        t.getReceiverId().getId(),
+                        t.getAmount()
+                        ))
+                .toList();
+    }
 }

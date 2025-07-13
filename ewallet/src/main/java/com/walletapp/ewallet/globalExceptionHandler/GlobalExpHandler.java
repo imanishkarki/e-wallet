@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import java.util.NoSuchElementException;
 
-
 @ControllerAdvice
 public class GlobalExpHandler {
     @ExceptionHandler(DuplicateUserException.class)
