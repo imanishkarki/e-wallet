@@ -31,7 +31,7 @@ public class Transaction {
     private UserWallet receiverId;
     private BigDecimal amount;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+ //   private LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)
     private StatusEnum status;

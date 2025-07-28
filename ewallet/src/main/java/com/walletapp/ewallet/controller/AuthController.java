@@ -48,7 +48,7 @@ public class AuthController {
 //
 //        // Save user
 //        user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        User savedUser = userRepository.save(user); // ⬅️ use returned user
+//        User savedUser = userRepository.save(user);
 //
 //        // Create wallet
 //        UserWallet wallet = new UserWallet();
@@ -91,10 +91,8 @@ public class AuthController {
 
 
 
-
     @PostMapping("/login")
     public String login(@RequestBody LoginDTO loginDTO) {
         return userService.verify(loginDTO);
     }
-
 }

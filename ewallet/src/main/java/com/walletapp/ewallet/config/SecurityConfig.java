@@ -30,7 +30,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+    public JwtAuthenticationFilter sjwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(jwtService(), userDetailsService());
     }
 
@@ -41,11 +41,12 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/user/signup", "/api/user/login").permitAll()
+
                         .anyRequest().authenticated())
             //   .httpBasic(Customizer.withDefaults())
-//            .authenticationProvider(authenticationProvider())
+    //    .authenticationProvider(authenticationProvider())
 
-                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(sjwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }

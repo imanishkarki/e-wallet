@@ -1,10 +1,12 @@
 package com.walletapp.ewallet.entity;
 
+import com.walletapp.ewallet.enums.RoleEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.math.BigDecimal;
@@ -24,6 +26,9 @@ public class User implements UserDetails {
     @Column(unique = true)
     private Long phoneNumber;
 
+    @Enumerated(EnumType.STRING)
+    private RoleEnum role;
+
     private BigDecimal balance = BigDecimal.ZERO;
     //private String email;
     private String password;
@@ -34,7 +39,8 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+
+        return List.of(new SimpleGrantedAuthority("ROLE"+ this.role.name()));
     }
 
     @Override
