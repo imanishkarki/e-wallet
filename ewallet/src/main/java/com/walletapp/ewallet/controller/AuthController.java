@@ -1,6 +1,7 @@
 package com.walletapp.ewallet.controller;
 import com.walletapp.ewallet.entity.User;
 import com.walletapp.ewallet.entity.UserWallet;
+import com.walletapp.ewallet.enums.RoleEnum;
 import com.walletapp.ewallet.enums.StatusEnum;
 import com.walletapp.ewallet.payload.LoginDTO;
 import com.walletapp.ewallet.repository.UserRepository;
@@ -11,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
-
 
 
 @RestController
@@ -68,28 +68,28 @@ public class AuthController {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             return ResponseEntity.badRequest().body("Username already exists");
         }
-
+       // System.out.println(user.getRole());
         // Save user
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setBalance(BigDecimal.ZERO); // Initialize balance to zero
         User savedUser = userRepository.save(user);
-
         // Create wallet using builder
-        UserWallet wallet = UserWallet.builder()
-                .user(savedUser)
-                .name(savedUser.getUsername())
-                //.id(savedUser.getId()) // Ensure the wallet ID matches the user ID
-                ///.name(savedUser.getUsername())
-                .phoneNumber(null)
-                .balance(BigDecimal.ZERO)
-                .status(StatusEnum.ACTIVE)
-                .build();
+        if (savedUser.getRole().contains(RoleEnum.USER)) {
 
-        userWalletRepository.save(wallet);
+            UserWallet wallet = UserWallet.builder()
+                    .user(savedUser)
+                    .name(savedUser.getUsername())
+                    //.id(savedUser.getId()) // Ensure the wallet ID matches the user ID
+                    ///.name(savedUser.getUsername())
+                    .phoneNumber(null)
+                    .balance(BigDecimal.ZERO)
+                    .status(StatusEnum.ACTIVE)
+                    .build();
+            userWalletRepository.save(wallet);
+        }
 
-        return ResponseEntity.ok("User registered successfully");
+        return ResponseEntity.ok(user.getRole()+" User registered successfully");
     }
-
-
 
     @PostMapping("/login")
     public String login(@RequestBody LoginDTO loginDTO) {

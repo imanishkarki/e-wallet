@@ -6,6 +6,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Builder
 public class CustomUserDetails implements UserDetails {
@@ -18,9 +19,17 @@ public class CustomUserDetails implements UserDetails {
     public CustomUserDetails() {
     }
 
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return Collections.singleton(new SimpleGrantedAuthority("USER"));
+//    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("USER"));
+        return user.getRole()
+                .stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_"+role.name()))
+                .toList();
     }
 
     @Override

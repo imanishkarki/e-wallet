@@ -17,20 +17,23 @@ public class UserWalletController {
     @Autowired
     private UserWalletService ewalletService;
 
-    @PostMapping
-    public ResponseEntity<ApiResponse> createUserWalletDTO(@RequestBody UserWalletDTO userWalletDTO){
-        return ResponseEntity.ok(ewalletService.createUserWalletDTO(userWalletDTO));
-    }
+//    @PostMapping
+//    public ResponseEntity<ApiResponse> createUserWalletDTO(@RequestBody UserWalletDTO userWalletDTO){
+//        return ResponseEntity.ok(ewalletService.createUserWalletDTO(userWalletDTO));
+//    }
 
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/load/{id}")
     public ResponseEntity<ApiResponse> loadUserWallet(@PathVariable Long id, @RequestBody BigDecimal balanceToAdd){
         return ResponseEntity.ok(ewalletService.loadUserWalletDTO(id, balanceToAdd));
     }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ApiResponse> deleteUserWalletById(@PathVariable Long id){
         return ResponseEntity.ok(ewalletService.deleteUserWalletById(id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<UserWalletDTO> getAllUserWallet(){
         return ewalletService.getAllUserWalletDTO();
@@ -41,10 +44,13 @@ public class UserWalletController {
         return ResponseEntity.ok(ewalletService.getUserWalletByIdDTO(id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/active")
     public ResponseEntity<ApiResponse> getActiveUserWalletsDTO() {
         return ResponseEntity.ok(ewalletService.getAllActiveUserWalletsDTO(StatusEnum.ACTIVE));
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/inactive")
     public ResponseEntity<ApiResponse> getInactiveUserWalletsDTO() {
         return ResponseEntity.ok(ewalletService.getAllInactiveUserWalletsDTO(StatusEnum.INACTIVE));

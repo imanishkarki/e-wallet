@@ -25,13 +25,14 @@ public class JwtService {
 
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
+       // claims.put("roles",user.getRole());
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
                 .setIssuer("DCA")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10)) // 10 minutes
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)   // <-- New API order: key first, algo second
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)   //  New API order: key first, algo second
                 .compact();
     }
 
