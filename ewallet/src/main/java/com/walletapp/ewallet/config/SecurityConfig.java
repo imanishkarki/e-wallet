@@ -40,16 +40,10 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/user/signup", "/api/user/login").permitAll()
-
                         .anyRequest().authenticated())
-            //   .httpBasic(Customizer.withDefaults())
-    //    .authenticationProvider(authenticationProvider())
-
                 .addFilterBefore(sjwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
         return httpSecurity.build();
     }
 

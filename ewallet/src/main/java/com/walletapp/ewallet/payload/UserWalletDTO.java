@@ -10,10 +10,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 public class UserWalletDTO {
-    // private Long id;
     private String name;
     private Long phoneNumber;
     private BigDecimal balance;
-    // private StatusEnum status;
-
 }

@@ -13,14 +13,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 
-
 @RestController
 @RequestMapping("/api/user")
 public class AuthController {
 
     @Autowired
     private UserService userService;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -28,54 +26,16 @@ public class AuthController {
     @Autowired
     private UserWalletRepository userWalletRepository;
 
-
-//    @PostMapping("/signup")
-//    public ResponseEntity<String> registerUser(@RequestBody User user) {
-//        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-//            return ResponseEntity.badRequest().body("Username already exists");
-//        }
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        userRepository.save(user);
-//        return ResponseEntity.ok("User registered successfully");
-//
-//    }
-
-//    @PostMapping("/signup")
-//    public ResponseEntity<String> registerUser(@RequestBody User user) {
-//        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-//            return ResponseEntity.badRequest().body("Username already exists");
-//        }
-//
-//        // Save user
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        User savedUser = userRepository.save(user);
-//
-//        // Create wallet
-//        UserWallet wallet = new UserWallet();
-//        wallet.setName(savedUser.getUsername());
-//        wallet.setPhoneNumber(null);
-//        wallet.setBalance(BigDecimal.ZERO);
-//        wallet.setStatus(StatusEnum.ACTIVE);
-//        wallet.setUser(savedUser);
-//
-//        userWalletRepository.save(wallet);
-//
-//        return ResponseEntity.ok("User registered successfully");
-//    }
-
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@RequestBody User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             return ResponseEntity.badRequest().body("Username already exists");
         }
-       // System.out.println(user.getRole());
-        // Save user
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setBalance(BigDecimal.ZERO); // Initialize balance to zero
         User savedUser = userRepository.save(user);
-        // Create wallet using builder
         if (savedUser.getRole().contains(RoleEnum.USER)) {
-
             UserWallet wallet = UserWallet.builder()
                     .user(savedUser)
                     .name(savedUser.getUsername())
@@ -87,7 +47,6 @@ public class AuthController {
                     .build();
             userWalletRepository.save(wallet);
         }
-
         return ResponseEntity.ok(user.getRole()+" User registered successfully");
     }
 

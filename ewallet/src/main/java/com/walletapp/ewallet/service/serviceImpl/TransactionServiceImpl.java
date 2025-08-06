@@ -132,12 +132,11 @@ public class TransactionServiceImpl implements TransactionService {
         List<Transaction> transactionHistoryById = transactionRepository.findAllBySenderId_IdOrReceiverId_Id(id,id);
         List<TransactionDTO> transactionByIdDTOList = transactionHistoryById.stream()
                 .map(item -> new TransactionDTO(
-                        item.getSenderId(),
-                        item.getReceiverId(),
+                        item.getSenderId().getId(),
+                        item.getReceiverId().getId(),
                         item.getAmount()))
                         .collect(Collectors.toList());
                 return transactionByIdDTOList;
-
         }
     }
 

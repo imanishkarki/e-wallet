@@ -14,17 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class TransactionDTO {
-  //  private Long transactionId;
     private Long senderId;
     private Long receiverId;
     private BigDecimal amount;
-
-  public TransactionDTO(UserWallet senderId, UserWallet receiverId, BigDecimal amount) {
-        this.senderId = senderId.getId();
-        this.receiverId = receiverId.getId();
-        this.amount = amount;
-  }
-
-  //  private LocalDateTime createdAt;
-   // private LocalDateTime updatedAt;
 }
