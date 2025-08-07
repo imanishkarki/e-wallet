@@ -28,6 +28,7 @@ public class UserWalletController {
         return ResponseEntity.ok(ewalletService.loadUserWalletDTO(id, balanceToAdd));
     }
 
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ApiResponse> deleteUserWalletById(@PathVariable Long id){
         return ResponseEntity.ok(ewalletService.deleteUserWalletById(id));
@@ -39,6 +40,7 @@ public class UserWalletController {
         return ewalletService.getAllUserWalletDTO();
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getUserWalletByIdDTO(@PathVariable  Long id){
         return ResponseEntity.ok(ewalletService.getUserWalletByIdDTO(id));

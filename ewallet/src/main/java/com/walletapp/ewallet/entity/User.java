@@ -12,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name ="users")
-public class User //implements UserDetails
+public class User
  {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -26,41 +26,9 @@ public class User //implements UserDetails
     private Set<RoleEnum> role;
 
     private BigDecimal balance = BigDecimal.ZERO;
-    //private String email;
     private String password;
     @Column(unique= true)
     private String username;
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     private UserWallet userWallet;
-
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//
-//        return List.of(new SimpleGrantedAuthority("ROLE"+ this.role.name()));
-//    }
-//
-//    @Override
-//    public String getUsername() {
-//        return username;
-//    }
-//
-//    @Override
-//    public boolean isAccountNonExpired() {
-//        return UserDetails.super.isAccountNonExpired();
-//    }
-//
-//    @Override
-//    public boolean isAccountNonLocked() {
-//        return UserDetails.super.isAccountNonLocked();
-//    }
-//
-//    @Override
-//    public boolean isCredentialsNonExpired() {
-//        return UserDetails.super.isCredentialsNonExpired();
-//    }
-//
-//    @Override
-//    public boolean isEnabled() {
-//        return UserDetails.super.isEnabled();
-//    }
 }

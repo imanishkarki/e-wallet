@@ -27,9 +27,6 @@ public class TransactionController {
     private TransactionService transactionService;
 
     @Autowired
-    private UserWalletRepository userWalletRepository;
-
-    @Autowired
     private TransactionRepository transactionRepository;
 
     @PostMapping

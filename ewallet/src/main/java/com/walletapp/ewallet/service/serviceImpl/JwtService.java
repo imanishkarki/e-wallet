@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
@@ -37,21 +36,6 @@ public class JwtService {
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)   //  New API order: key first, algo second
                 .compact();
     }
-//public String generateToken(User user) {
-//    Map<String, Object> claims = new HashMap<>();
-//    claims.put("roles", user.getRole().stream()
-//            .map(Enum::name)
-//            .collect(Collectors.toList()));  // ["ROLE_USER", "ROLE_ADMIN"]
-//
-//    return Jwts.builder()
-//            .setClaims(claims)
-//            .setSubject(user.getUsername())
-//            .setIssuer("DCA")
-//            .setIssuedAt(new Date(System.currentTimeMillis()))
-//            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10)) // 10 mins
-//            .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-//            .compact();
-//}
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);

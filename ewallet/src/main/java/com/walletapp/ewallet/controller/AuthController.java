@@ -9,6 +9,7 @@ import com.walletapp.ewallet.repository.UserWalletRepository;
 import com.walletapp.ewallet.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
@@ -39,8 +40,6 @@ public class AuthController {
             UserWallet wallet = UserWallet.builder()
                     .user(savedUser)
                     .name(savedUser.getUsername())
-                    //.id(savedUser.getId()) // Ensure the wallet ID matches the user ID
-                    ///.name(savedUser.getUsername())
                     .phoneNumber(null)
                     .balance(BigDecimal.ZERO)
                     .status(StatusEnum.ACTIVE)

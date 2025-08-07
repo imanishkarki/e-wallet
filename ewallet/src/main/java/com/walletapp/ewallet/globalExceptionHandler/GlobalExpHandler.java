@@ -9,6 +9,7 @@ import java.util.NoSuchElementException;
 
 @ControllerAdvice
 public class GlobalExpHandler {
+
     @ExceptionHandler(DuplicateUserException.class)
     public ResponseEntity<ErrorResponse> duplicateExceptionHandler(DuplicateUserException dex, WebRequest wer){
         ErrorResponse erp =new ErrorResponse(dex.getMessage(),wer.getDescription(false),"User already exists with this Phone Number",false);
@@ -26,4 +27,5 @@ public class GlobalExpHandler {
         ErrorResponse erp =new ErrorResponse(nsi.getMessage(),wer.getDescription(false),"User doesn't exists with this Id",false);
         return new ResponseEntity<ErrorResponse>(erp, HttpStatus.NOT_FOUND);
     }
+
 }
