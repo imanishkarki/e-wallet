@@ -43,19 +43,10 @@ public class TransactionController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @GetMapping("/get")
-    public List<TransactionDTO> getTransactionStatement() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
-        User liggedInUser = userDetails.getUser();
-        UserWallet wallet = liggedInUser.getUserWallet();
-        List<Transaction> transaction = transactionRepository.findByWalletId(wallet.getId());
-        return transaction.stream()
-                .map(t -> new TransactionDTO(
-                        t.getSenderId().getId(),
-                        t.getReceiverId().getId(),
-                        t.getAmount()
-                        ))
-                .toList();
+    @GetMapping("/statement")
+    public ResponseEntity<ApiResponse> getTransactionStatement(){
+      //
+        return ResponseEntity.ok(transactionService.getTransactionStatement());
     }
+
 }

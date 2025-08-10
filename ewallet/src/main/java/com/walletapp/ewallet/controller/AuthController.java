@@ -3,7 +3,9 @@ import com.walletapp.ewallet.entity.User;
 import com.walletapp.ewallet.entity.UserWallet;
 import com.walletapp.ewallet.enums.RoleEnum;
 import com.walletapp.ewallet.enums.StatusEnum;
+import com.walletapp.ewallet.model.ApiResponse;
 import com.walletapp.ewallet.payload.LoginDTO;
+import com.walletapp.ewallet.payload.SignupDTO;
 import com.walletapp.ewallet.repository.UserRepository;
 import com.walletapp.ewallet.repository.UserWalletRepository;
 import com.walletapp.ewallet.service.UserService;
@@ -27,26 +29,30 @@ public class AuthController {
     @Autowired
     private UserWalletRepository userWalletRepository;
 
-    @PostMapping("/signup")
-    public ResponseEntity<String> registerUser(@RequestBody User user) {
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().body("Username already exists");
-        }
+//    @PostMapping("/signup")
+//    public ResponseEntity<String> registerUser(@RequestBody User user) {
+//        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+//            return ResponseEntity.badRequest().body("Username already exists");
+//        }
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        user.setBalance(BigDecimal.ZERO); // Initialize balance to zero
+//        User savedUser = userRepository.save(user);
+//        if (savedUser.getRole().contains(RoleEnum.USER)) {
+//            UserWallet wallet = UserWallet.builder()
+//                    .user(savedUser)
+//                    .name(savedUser.getUsername())
+//                    .phoneNumber(null)
+//                    .balance(BigDecimal.ZERO)
+//                    .status(StatusEnum.ACTIVE)
+//                    .build();
+//            userWalletRepository.save(wallet);
+//        }
+//        return ResponseEntity.ok(user.getRole()+" User registered successfully");
+//    }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setBalance(BigDecimal.ZERO); // Initialize balance to zero
-        User savedUser = userRepository.save(user);
-        if (savedUser.getRole().contains(RoleEnum.USER)) {
-            UserWallet wallet = UserWallet.builder()
-                    .user(savedUser)
-                    .name(savedUser.getUsername())
-                    .phoneNumber(null)
-                    .balance(BigDecimal.ZERO)
-                    .status(StatusEnum.ACTIVE)
-                    .build();
-            userWalletRepository.save(wallet);
-        }
-        return ResponseEntity.ok(user.getRole()+" User registered successfully");
+    @PostMapping("/signup")
+    public ResponseEntity<ApiResponse> registerUser(@RequestBody SignupDTO signupDTO){
+        return ResponseEntity.ok(userService.registerUser(signupDTO));
     }
 
     @PostMapping("/login")

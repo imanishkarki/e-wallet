@@ -1,5 +1,4 @@
 package com.walletapp.ewallet.service.serviceImpl;
-
 import com.walletapp.ewallet.entity.Transaction;
 import com.walletapp.ewallet.entity.User;
 import com.walletapp.ewallet.entity.UserWallet;
@@ -7,7 +6,6 @@ import com.walletapp.ewallet.enums.StatusEnum;
 import com.walletapp.ewallet.globalExceptionHandler.IdNotFoundException;
 import com.walletapp.ewallet.model.ApiResponse;
 import com.walletapp.ewallet.payload.TransactionDTO;
-
 import com.walletapp.ewallet.repository.TransactionRepository;
 import com.walletapp.ewallet.repository.UserWalletRepository;
 import com.walletapp.ewallet.service.CustomUserDetails;
@@ -16,11 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -36,7 +32,7 @@ public class TransactionServiceImpl implements TransactionService {
         User loggedInUser = userDetails.getUser();
         Long loggedInWalletId = loggedInUser.getUserWallet().getId();
 
-        Long senderId = transactionDTO.getSenderId();
+        Long senderId = loggedInWalletId;  //transactionDTO.getSenderId();
         Long receiverId = transactionDTO.getReceiverId();
         BigDecimal amount = transactionDTO.getAmount();
 
@@ -44,16 +40,16 @@ public class TransactionServiceImpl implements TransactionService {
             throw new IllegalArgumentException("Sender and Receiver IDs must not be null");
         }
 
-        if (!loggedInWalletId.equals(senderId)) {
-            throw new SecurityException("You are not authorized to initiate this transaction");
-        }
+//        if (!loggedInWalletId.equals(senderId)) {
+//            throw new SecurityException("You are not authorized to initiate this transaction");
+//        }
 
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount must be greater than zero");
         }
 
-        UserWallet sender = userWalletRepository.findById(senderId)
-                .orElseThrow(() -> new IdNotFoundException("Sender not found"));
+        UserWallet sender = userWalletRepository.findById(senderId).get();
+//                .orElseThrow(() -> new IdNotFoundException("Sender not found"));
         UserWallet receiver = userWalletRepository.findById(receiverId)
                 .orElseThrow(() -> new IdNotFoundException("Receiver not found"));
 
@@ -74,7 +70,6 @@ public class TransactionServiceImpl implements TransactionService {
         return new ApiResponse(transactionDTO, true, "Transaction successful");
     }
 
-
     @Override
     public List<TransactionDTO> getTransactionByIdDTO(Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -93,6 +88,31 @@ public class TransactionServiceImpl implements TransactionService {
                         .collect(Collectors.toList());
                 return transactionByIdDTOList;
         }
+
+    @Override
+    public ApiResponse getTransactionStatement() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null || !(auth.getPrincipal() instanceof CustomUserDetails userDetails)) {
+            return new ApiResponse(null, false, "User not authenticated");
+        }
+        User loggedInUser = userDetails.getUser();
+        UserWallet wallet = loggedInUser.getUserWallet();
+
+        if (wallet == null) {
+            return new ApiResponse(null, false, "User wallet not found");
+        }
+        List<Transaction> transactions = transactionRepository.findByWalletId(wallet.getId());
+        List<TransactionDTO> transactionDTOs = transactions.stream()
+                .map(t -> new TransactionDTO(
+                        t.getSenderId().getId(),
+                        t.getReceiverId().getId(),
+                        t.getAmount()
+                ))
+                .toList();
+
+        return new ApiResponse(transactionDTOs, true, "Transaction statement retrieved successfully");
     }
 
+}
 

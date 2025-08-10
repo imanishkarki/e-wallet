@@ -11,4 +11,6 @@ public interface TransactionService {
     ApiResponse createTransactionDTO(TransactionDTO transactionDTO);
 
     List<TransactionDTO> getTransactionByIdDTO(Long id);
+
+    ApiResponse getTransactionStatement();
 }
