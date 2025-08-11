@@ -4,6 +4,7 @@ import com.walletapp.ewallet.entity.User;
 import com.walletapp.ewallet.entity.UserWallet;
 import com.walletapp.ewallet.enums.StatusEnum;
 import com.walletapp.ewallet.globalExceptionHandler.IdNotFoundException;
+import com.walletapp.ewallet.globalExceptionHandler.WalletException;
 import com.walletapp.ewallet.model.ApiResponse;
 import com.walletapp.ewallet.payload.TransactionDTO;
 import com.walletapp.ewallet.repository.TransactionRepository;
@@ -11,6 +12,7 @@ import com.walletapp.ewallet.repository.UserWalletRepository;
 import com.walletapp.ewallet.service.CustomUserDetails;
 import com.walletapp.ewallet.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -31,14 +33,13 @@ public class TransactionServiceImpl implements TransactionService {
         CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
         User loggedInUser = userDetails.getUser();
         Long loggedInWalletId = loggedInUser.getUserWallet().getId();
-
-        Long senderId = loggedInWalletId;  //transactionDTO.getSenderId();
+        Long senderId = loggedInWalletId;  //transactionDTO.getSenderId(); //reduce this line
         Long receiverId = transactionDTO.getReceiverId();
         BigDecimal amount = transactionDTO.getAmount();
 
-        if (senderId == null || receiverId == null) {
-            throw new IllegalArgumentException("Sender and Receiver IDs must not be null");
-        }
+//        if (senderId == null || receiverId == null) {
+//            throw new IllegalArgumentException("Sender and Receiver IDs must not be null");
+//        }
 
 //        if (!loggedInWalletId.equals(senderId)) {
 //            throw new SecurityException("You are not authorized to initiate this transaction");
@@ -49,12 +50,22 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         UserWallet sender = userWalletRepository.findById(senderId).get();
-//                .orElseThrow(() -> new IdNotFoundException("Sender not found"));
+//                .orElseThrow(() ->  WalletException.builder()
+//                        .code("")
+//                        .status(HttpStatus.NOT_FOUND)
+//                        .build());
+
         UserWallet receiver = userWalletRepository.findById(receiverId)
-                .orElseThrow(() -> new IdNotFoundException("Receiver not found"));
+                .orElseThrow(() ->  WalletException.builder()
+                        .code("IDE02")
+                        .status(HttpStatus.NOT_FOUND)
+                        .build());
 
         if (sender.getBalance().compareTo(amount) < 0) {
-            throw new RuntimeException("Insufficient balance");
+            throw  WalletException.builder()
+                    .code("IB00")
+                    .status(HttpStatus.BAD_REQUEST)
+                    .build();
         }
         sender.setBalance(sender.getBalance().subtract(amount));
         receiver.setBalance(receiver.getBalance().add(amount));

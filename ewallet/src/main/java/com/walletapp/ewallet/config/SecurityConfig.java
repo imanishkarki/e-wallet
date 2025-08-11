@@ -1,6 +1,7 @@
 package com.walletapp.ewallet.config;
 import com.walletapp.ewallet.service.serviceImpl.CustomUserDetailsService;
 import com.walletapp.ewallet.service.serviceImpl.JwtService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,7 +20,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableMethodSecurity
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final CustomAuthEntryPoint customAuthEntryPoint;
 
     @Bean
     public JwtService jwtService() {
@@ -43,6 +47,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/user/signup", "/api/user/login").permitAll()
                         .anyRequest().authenticated())
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(customAuthEntryPoint))
                 .addFilterBefore(sjwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
@@ -64,5 +69,6 @@ public class SecurityConfig {
         provider.setPasswordEncoder(bCryptPasswordEncoder());
         return provider;
     }
+
 }
 

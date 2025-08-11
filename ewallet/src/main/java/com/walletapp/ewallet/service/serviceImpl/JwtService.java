@@ -32,7 +32,7 @@ public class JwtService {
                 .setSubject(username)
                 .setIssuer("DCA")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10)) // 10 minutes
+                .setExpiration(new Date(System.currentTimeMillis() + 500 * 1 * 1)) // 10 minutes
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)   //  New API order: key first, algo second
                 .compact();
     }
@@ -58,7 +58,7 @@ public class JwtService {
                 .getBody();
     }
 
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 

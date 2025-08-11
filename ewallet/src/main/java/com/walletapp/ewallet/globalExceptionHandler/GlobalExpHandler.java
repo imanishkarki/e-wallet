@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -48,6 +49,19 @@ public class GlobalExpHandler {
     public ResponseEntity<ErrorResponse> handleMalformedJson(HttpMessageNotReadableException ex){
         ErrorResponse errorMessage =new ErrorResponse( ex.getMostSpecificCause().getMessage(), null, "Malformed JSON request", false);
         return new ResponseEntity<ErrorResponse>(errorMessage, HttpStatus.NOT_FOUND );
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> fieldValidationException(MethodArgumentNotValidException mex){
+        StringBuilder errorMessage = new StringBuilder();
+        mex.getBindingResult().getFieldErrors().forEach(fieldError -> {
+            errorMessage.append(fieldError.getField())
+                        .append(": ")
+                        .append(fieldError.getDefaultMessage())
+                        .append("; ");
+        });
+        ErrorResponse erp = new ErrorResponse(errorMessage.toString(), null, "Validation failed", false);
+        return new ResponseEntity<ErrorResponse>(erp, HttpStatus.BAD_REQUEST);
     }
 
 //    @ExceptionHandler(MethodArgumentNotValidException.class)

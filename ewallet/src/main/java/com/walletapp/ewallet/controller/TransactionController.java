@@ -10,6 +10,7 @@ import com.walletapp.ewallet.repository.TransactionRepository;
 import com.walletapp.ewallet.repository.UserWalletRepository;
 import com.walletapp.ewallet.service.CustomUserDetails;
 import com.walletapp.ewallet.service.TransactionService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,14 +31,14 @@ public class TransactionController {
     private TransactionRepository transactionRepository;
 
     @PostMapping
-    public ResponseEntity<ApiResponse> createTransactionDTO(@RequestBody  TransactionDTO transactionDTO){
+    public ResponseEntity<ApiResponse> createTransactionDTO(@Valid @RequestBody  TransactionDTO transactionDTO){
 
         return ResponseEntity.ok( transactionService.createTransactionDTO( transactionDTO));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/get/{id}")
     public List<TransactionDTO> getTransactionByIdDTO(@PathVariable Long id) {
-
 
         return transactionService.getTransactionByIdDTO(id);
     }
