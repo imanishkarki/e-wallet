@@ -1,5 +1,4 @@
 package com.walletapp.ewallet.service.serviceImpl;
-import com.walletapp.ewallet.entity.User;
 import com.walletapp.ewallet.service.CustomUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -32,7 +31,7 @@ public class JwtService {
                 .setSubject(username)
                 .setIssuer("DCA")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 500 * 1 * 1)) // 10 minutes
+                .setExpiration(new Date(System.currentTimeMillis() + 500 * 1000 * 10)) // 10 minutes
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)   //  New API order: key first, algo second
                 .compact();
     }

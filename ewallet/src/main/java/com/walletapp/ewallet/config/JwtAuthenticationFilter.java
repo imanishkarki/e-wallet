@@ -3,8 +3,6 @@ import com.walletapp.ewallet.globalExceptionHandler.WalletException;
 import com.walletapp.ewallet.service.CustomUserDetails;
 import com.walletapp.ewallet.service.serviceImpl.CustomUserDetailsService;
 import com.walletapp.ewallet.service.serviceImpl.JwtService;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,8 +13,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.servlet.HandlerExceptionResolver;
-
 import java.io.IOException;
 
 @Component
@@ -38,15 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-
-
         final String jwt = authHeader.substring(7);
-//       if (jwtService.isTokenExpired(jwt)) {
-//            throw WalletException.builder()
-//                    .code("JWT001")
-//                    .status(HttpStatus.FORBIDDEN)
-//                    .build();
-//       }
 
         try {
             final String userName = jwtService.extractUsername(jwt);

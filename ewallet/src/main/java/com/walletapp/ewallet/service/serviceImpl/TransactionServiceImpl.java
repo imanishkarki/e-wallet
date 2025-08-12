@@ -32,8 +32,8 @@ public class TransactionServiceImpl implements TransactionService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
         User loggedInUser = userDetails.getUser();
-        Long loggedInWalletId = loggedInUser.getUserWallet().getId();
-        Long senderId = loggedInWalletId;  //transactionDTO.getSenderId(); //reduce this line
+        Long senderId = loggedInUser.getUserWallet().getId();
+        transactionDTO.setSenderId(senderId);
         Long receiverId = transactionDTO.getReceiverId();
         BigDecimal amount = transactionDTO.getAmount();
 
@@ -41,19 +41,15 @@ public class TransactionServiceImpl implements TransactionService {
 //            throw new IllegalArgumentException("Sender and Receiver IDs must not be null");
 //        }
 
-//        if (!loggedInWalletId.equals(senderId)) {
-//            throw new SecurityException("You are not authorized to initiate this transaction");
-//        }
-
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Amount must be greater than zero");
+            throw  WalletException.builder()
+                                    .code("IB01")
+                                    .status(HttpStatus.BAD_REQUEST)
+                                    .build();
         }
 
         UserWallet sender = userWalletRepository.findById(senderId).get();
-//                .orElseThrow(() ->  WalletException.builder()
-//                        .code("")
-//                        .status(HttpStatus.NOT_FOUND)
-//                        .build());
+
 
         UserWallet receiver = userWalletRepository.findById(receiverId)
                 .orElseThrow(() ->  WalletException.builder()
@@ -104,9 +100,10 @@ public class TransactionServiceImpl implements TransactionService {
     public ApiResponse getTransactionStatement() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if (auth == null || !(auth.getPrincipal() instanceof CustomUserDetails userDetails)) {
-            return new ApiResponse(null, false, "User not authenticated");
-        }
+//        if (auth == null || !(auth.getPrincipal() instanceof CustomUserDetails userDetails)) {
+//            return new ApiResponse(null, false, "User not authenticated");
+//        }
+        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
         User loggedInUser = userDetails.getUser();
         UserWallet wallet = loggedInUser.getUserWallet();
 
@@ -124,6 +121,5 @@ public class TransactionServiceImpl implements TransactionService {
 
         return new ApiResponse(transactionDTOs, true, "Transaction statement retrieved successfully");
     }
-
 }
 

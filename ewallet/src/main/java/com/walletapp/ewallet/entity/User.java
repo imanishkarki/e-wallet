@@ -21,7 +21,7 @@ public class User
     private  Long id;
     private String name;
     @Column(unique = true)
-    private Long phoneNumber;
+    private String phoneNumber;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)

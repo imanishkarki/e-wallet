@@ -20,26 +20,12 @@ import java.util.stream.Collectors;
 @Service
 public class UserWalletServiceImpl implements UserWalletService {
 
-    @Autowired
-    private UserWalletRepository ewalletRepository;
-    @Autowired
-    private UserWalletRepository userWalletRepository;
-    @Autowired
-    private TransactionRepository transactionRepository;
+    private final UserWalletRepository ewalletRepository;
+    private final UserWalletRepository userWalletRepository;
 
-    @Override
-    public ApiResponse createUserWalletDTO(UserWalletDTO userWalletDTO) {
-        if(userWalletRepository.findByPhoneNumber(userWalletDTO.getPhoneNumber()) != null) {
-            throw new DuplicateUserException("User wallet with this phone number already exists");
-        }
-        UserWallet uw = new UserWallet();
-        uw.setName(userWalletDTO.getName());
-        uw.setPhoneNumber(userWalletDTO.getPhoneNumber());
-        uw.setStatus(StatusEnum.ACTIVE);
-        uw.setBalance(BigDecimal.ZERO);
-        ewalletRepository.save(uw);
-        UserWalletDTO uwd = new UserWalletDTO(uw.getName(), uw.getPhoneNumber(), uw.getBalance());
-        return new ApiResponse(uwd, true, "saved successfully");
+    public UserWalletServiceImpl(UserWalletRepository ewalletRepository, UserWalletRepository userWalletRepository) {
+        this.ewalletRepository = ewalletRepository;
+        this.userWalletRepository = userWalletRepository;
     }
 
     @Override

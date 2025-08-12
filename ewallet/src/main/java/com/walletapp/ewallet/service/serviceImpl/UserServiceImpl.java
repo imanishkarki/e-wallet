@@ -3,7 +3,6 @@ import com.walletapp.ewallet.entity.User;
 import com.walletapp.ewallet.entity.UserWallet;
 import com.walletapp.ewallet.enums.RoleEnum;
 import com.walletapp.ewallet.enums.StatusEnum;
-import com.walletapp.ewallet.globalExceptionHandler.DuplicateUserException;
 import com.walletapp.ewallet.globalExceptionHandler.WalletException;
 import com.walletapp.ewallet.model.ApiResponse;
 import com.walletapp.ewallet.payload.LoginDTO;
@@ -27,19 +26,19 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final UserWalletRepository userWalletRepository;
-    private final ErrorCodeService errorCodeService;
+
     public UserServiceImpl(
-            PasswordEncoder passwordEncoder, UserRepository userRepository,
-            AuthenticationManager authenticationManager,
-            JwtService jwtService, UserWalletRepository userWalletRepository, ErrorCodeService errorCodeService) {
+                PasswordEncoder passwordEncoder,
+                UserRepository userRepository,
+                AuthenticationManager authenticationManager,
+                JwtService jwtService,
+                UserWalletRepository userWalletRepository) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.userWalletRepository = userWalletRepository;
-        this.errorCodeService = errorCodeService;
     }
-
 
     @Override
     public String verify(LoginDTO loginDTO) {
@@ -53,24 +52,19 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
     @Override
     public ApiResponse registerUser(SignupDTO signupDTO) throws WalletException{
         if (userRepository.findByUsername(signupDTO.getUsername()).isPresent() ) {
-            //throw new DuplicateUserException("Username already exists");
             throw  WalletException.builder()
                     .code("DUE00")
                     .status(HttpStatus.BAD_REQUEST)
                     .build();
-           // return new ApiResponse(null,false, "Username already exist");
         }
         if (userRepository.findByPhoneNumber(signupDTO.getPhoneNumber()).isPresent()) {
             throw  WalletException.builder()
                     .code("DUE01")
                     .status(HttpStatus.BAD_REQUEST)
                     .build();
-           // return new ApiResponse(null,false, "Phone number already registered");
-          //  throw new DuplicateUserException("Phone number already registered");
         }
         signupDTO.setPassword(passwordEncoder.encode(signupDTO.getPassword()));
         signupDTO.setBalance(BigDecimal.ZERO); // Initialize balance to zero
@@ -93,7 +87,6 @@ public class UserServiceImpl implements UserService {
                     .build();
             userWalletRepository.save(wallet);
         }
-       // return ResponseEntity.ok(user.getRole()+" User registered successfully");
         return new ApiResponse (null, true, "User registered successfull, "+ signupDTO.getName() + " is registered as " + signupDTO.getRole());
     }
 }

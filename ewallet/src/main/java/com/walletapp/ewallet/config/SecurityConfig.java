@@ -47,10 +47,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/user/signup", "/api/user/login").permitAll()
                         .anyRequest().authenticated())
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(customAuthEntryPoint))
+                        .exceptionHandling(exception -> exception.authenticationEntryPoint(customAuthEntryPoint)
+                        .accessDeniedHandler(customAuthEntryPoint)
+                )
                 .addFilterBefore(sjwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
+
 
     @Bean
     public PasswordEncoder bCryptPasswordEncoder() {

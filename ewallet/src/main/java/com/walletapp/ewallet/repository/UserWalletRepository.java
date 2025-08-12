@@ -10,10 +10,9 @@ import java.util.Optional;
 
 public interface UserWalletRepository extends JpaRepository<UserWallet, Long> {
     List<UserWallet> findByStatus(StatusEnum status);
-    UserWallet findByPhoneNumber(Long phoneNumber);
 
     @Override
-    Optional<UserWallet> findById(Long aLong);
+    Optional<UserWallet> findById(Long id);
 
     Optional<UserWallet> findByUser(User user);
 

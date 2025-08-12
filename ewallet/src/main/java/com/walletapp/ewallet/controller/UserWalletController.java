@@ -17,10 +17,6 @@ public class UserWalletController {
     @Autowired
     private UserWalletService ewalletService;
 
-//    @PostMapping
-//    public ResponseEntity<ApiResponse> createUserWalletDTO(@RequestBody UserWalletDTO userWalletDTO){
-//        return ResponseEntity.ok(ewalletService.createUserWalletDTO(userWalletDTO));
-//    }
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/load/{id}")
