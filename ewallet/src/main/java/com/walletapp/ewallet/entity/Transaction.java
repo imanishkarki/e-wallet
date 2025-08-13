@@ -30,7 +30,7 @@ public class Transaction {
     @JoinColumn(name = "receiver_id",referencedColumnName = "id")
     private UserWallet receiverId;
     private BigDecimal amount;
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
     private StatusEnum status;

@@ -27,10 +27,11 @@ public class User
     @Enumerated(EnumType.STRING)
     private Set<RoleEnum> role;
 
-    private BigDecimal balance = BigDecimal.ZERO;
+ //private BigDecimal balance = BigDecimal.ZERO;
     private String password;
     @Column(unique= true)
     private String username;
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     private UserWallet userWallet;
+
 }

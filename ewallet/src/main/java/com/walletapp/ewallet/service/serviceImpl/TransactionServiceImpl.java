@@ -3,7 +3,6 @@ import com.walletapp.ewallet.entity.Transaction;
 import com.walletapp.ewallet.entity.User;
 import com.walletapp.ewallet.entity.UserWallet;
 import com.walletapp.ewallet.enums.StatusEnum;
-import com.walletapp.ewallet.globalExceptionHandler.IdNotFoundException;
 import com.walletapp.ewallet.globalExceptionHandler.WalletException;
 import com.walletapp.ewallet.model.ApiResponse;
 import com.walletapp.ewallet.payload.TransactionDTO;
@@ -84,7 +83,10 @@ public class TransactionServiceImpl implements TransactionService {
         User user= userDetails.getUser();
 
         UserWallet userWallet = userWalletRepository.findByUser(user)
-                .orElseThrow(() -> new IdNotFoundException("User not found"));
+                .orElseThrow(() -> WalletException.builder()
+                                .code("IDE01")
+                                .status(HttpStatus.NOT_FOUND)
+                                .build());
 
         List<Transaction> transactionHistoryById = transactionRepository.findAllBySenderId_IdOrReceiverId_Id(id,id);
         List<TransactionDTO> transactionByIdDTOList = transactionHistoryById.stream()

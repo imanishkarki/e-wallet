@@ -19,9 +19,7 @@ public class  UserWallet {
     @Id
     private Long id;
     private String name;
-    private String phoneNumber;
     private BigDecimal balance;
-
     @OneToMany(mappedBy = "senderId")
     private List<Transaction> sentTransaction;
     @OneToMany(mappedBy = "receiverId")

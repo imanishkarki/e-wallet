@@ -22,7 +22,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService userDetailsService;
     public JwtAuthenticationFilter(JwtService jwtService, CustomUserDetailsService userDetailsService) {
         this.jwtService = jwtService;
-
         this.userDetailsService = userDetailsService;
     }
     @Override
@@ -36,9 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String jwt = authHeader.substring(7);
 
-        try {
             final String userName = jwtService.extractUsername(jwt);
-
 
             if (userName != null) {
                 //Authenticate
@@ -60,13 +57,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
             filterChain.doFilter(request, response);
-
-        }catch (Exception e){
-            throw WalletException.builder()
-                    .code("JWT001")
-                    .status(HttpStatus.FORBIDDEN)
-                    .message(e.getMessage())
-                    .build();
-        }
     }
 }

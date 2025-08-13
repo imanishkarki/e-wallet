@@ -7,13 +7,17 @@ import com.walletapp.ewallet.globalExceptionHandler.WalletException;
 import com.walletapp.ewallet.model.ApiResponse;
 import com.walletapp.ewallet.payload.LoginDTO;
 import com.walletapp.ewallet.payload.SignupDTO;
+import com.walletapp.ewallet.payload.UsernameUpdateRequestDTO;
+import com.walletapp.ewallet.payload.UsernameUpdateResponseDTO;
 import com.walletapp.ewallet.repository.UserRepository;
 import com.walletapp.ewallet.repository.UserWalletRepository;
+import com.walletapp.ewallet.service.CustomUserDetails;
 import com.walletapp.ewallet.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
@@ -67,26 +71,69 @@ public class UserServiceImpl implements UserService {
                     .build();
         }
         signupDTO.setPassword(passwordEncoder.encode(signupDTO.getPassword()));
-        signupDTO.setBalance(BigDecimal.ZERO); // Initialize balance to zero
+        //signupDTO.setBalance(BigDecimal.ZERO); // Initialize balance to zero
         User user = User.builder()
                 .name(signupDTO.getName())
                 .username(signupDTO.getUsername())
                 .phoneNumber(signupDTO.getPhoneNumber())
                 .password(signupDTO.getPassword())
                 .role(signupDTO.getRole())
-                .balance(signupDTO.getBalance())
+                //.balance(signupDTO.getBalance())
                 .build();
         User savedUser = userRepository.save(user);
         if (savedUser.getRole().contains(RoleEnum.USER)) {
             UserWallet wallet = UserWallet.builder()
                     .user(savedUser)
                     .name(savedUser.getUsername())
-                    .phoneNumber(null)
+                    //.phoneNumber(null)
                     .balance(BigDecimal.ZERO)
                     .status(StatusEnum.ACTIVE)
                     .build();
             userWalletRepository.save(wallet);
         }
         return new ApiResponse (null, true, "User registered successfull, "+ signupDTO.getName() + " is registered as " + signupDTO.getRole());
+    }
+
+    @Override
+    public ApiResponse updateUsername(UsernameUpdateRequestDTO usernameUpdateRequestDTO) throws WalletException {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+//        if (auth == null || !(auth.getPrincipal() instanceof CustomUserDetails userDetails)) {
+//            return new ApiResponse(null, false, "User not authenticated");
+//        }
+        CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+        User loggedInUser = userDetails.getUser();
+        //UserWallet wallet = loggedInUser.getUserWallet();
+        Long id = loggedInUser.getId();
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> WalletException.builder()
+                        .code("IDE00")
+                        .status(HttpStatus.NOT_FOUND)
+                        .build());
+    String oldUsername = user.getUsername();
+    String username = usernameUpdateRequestDTO.getUsername();
+
+    if(username == null || username.isEmpty()) {
+            throw WalletException.builder()
+                    .code("DUE02")
+                    .status(HttpStatus.BAD_REQUEST)
+                    .build();
+    } else if (userRepository.findByUsername(username).isPresent()) {
+        throw WalletException.builder()
+                .code("DUE00")
+                .status(HttpStatus.BAD_REQUEST)
+                .build();
+    }
+        user.setUsername(username);
+        userRepository.save(user);
+        UsernameUpdateResponseDTO usernameUpdateResponseDTO =  UsernameUpdateResponseDTO.builder()
+                .id(id)
+                .oldUsername(oldUsername)
+                .newUsername(username)
+                .build();
+
+        return new  ApiResponse(usernameUpdateResponseDTO,true,"Username is updated" );
     }
 }

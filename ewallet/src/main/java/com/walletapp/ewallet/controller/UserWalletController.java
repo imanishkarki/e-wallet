@@ -18,7 +18,7 @@ public class UserWalletController {
     private UserWalletService ewalletService;
 
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/load/{id}")
     public ResponseEntity<ApiResponse> loadUserWallet(@PathVariable Long id, @RequestBody BigDecimal balanceToAdd){
         return ResponseEntity.ok(ewalletService.loadUserWalletDTO(id, balanceToAdd));
@@ -54,8 +54,4 @@ public class UserWalletController {
         return ResponseEntity.ok(ewalletService.getAllInactiveUserWalletsDTO(StatusEnum.INACTIVE));
     }
 
-    @GetMapping("/test")
-    public String test(){
-        return "Test endpoint is working!";
-    }
 }
