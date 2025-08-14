@@ -7,7 +7,7 @@ import com.walletapp.ewallet.payload.SignupDTO;
 import com.walletapp.ewallet.payload.UsernameUpdateRequestDTO;
 
 public interface UserService {
-    String verify(LoginDTO loginDTO);
+    ApiResponse verify(LoginDTO loginDTO);
 
     ApiResponse registerUser(SignupDTO signupDTO) throws WalletException;
 

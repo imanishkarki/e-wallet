@@ -1,6 +1,5 @@
 package com.walletapp.ewallet.config;
 import com.walletapp.ewallet.service.serviceImpl.ErrorCodeService;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

@@ -1,27 +1,18 @@
 package com.walletapp.ewallet.service.serviceImpl;
 import com.walletapp.ewallet.entity.Transaction;
-import com.walletapp.ewallet.entity.User;
 import com.walletapp.ewallet.entity.UserWallet;
 import com.walletapp.ewallet.enums.StatusEnum;
-import com.walletapp.ewallet.globalExceptionHandler.DuplicateUserException;
 import com.walletapp.ewallet.globalExceptionHandler.WalletException;
 import com.walletapp.ewallet.model.ApiResponse;
 import com.walletapp.ewallet.payload.LoadResponseDTO;
-import com.walletapp.ewallet.payload.TransactionDTO;
 import com.walletapp.ewallet.payload.UserWalletDTO;
 import com.walletapp.ewallet.repository.TransactionRepository;
 import com.walletapp.ewallet.repository.UserWalletRepository;
-import com.walletapp.ewallet.service.CustomUserDetails;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.walletapp.ewallet.service.UserWalletService;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service

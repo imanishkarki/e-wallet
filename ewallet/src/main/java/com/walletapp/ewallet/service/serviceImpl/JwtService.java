@@ -1,5 +1,4 @@
 package com.walletapp.ewallet.service.serviceImpl;
-import com.walletapp.ewallet.service.CustomUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

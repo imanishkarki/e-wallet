@@ -1,13 +1,11 @@
 package com.walletapp.ewallet.config;
-import com.walletapp.ewallet.globalExceptionHandler.WalletException;
-import com.walletapp.ewallet.service.CustomUserDetails;
+import com.walletapp.ewallet.service.serviceImpl.CustomUserDetails;
 import com.walletapp.ewallet.service.serviceImpl.CustomUserDetailsService;
 import com.walletapp.ewallet.service.serviceImpl.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -37,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             final String userName = jwtService.extractUsername(jwt);
 
-            if (userName != null) {
+            if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 //Authenticate
                 CustomUserDetails customUserDetails = userDetailsService.loadUserByUsername(userName);
 

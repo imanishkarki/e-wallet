@@ -5,13 +5,9 @@ import com.walletapp.ewallet.enums.RoleEnum;
 import com.walletapp.ewallet.enums.StatusEnum;
 import com.walletapp.ewallet.globalExceptionHandler.WalletException;
 import com.walletapp.ewallet.model.ApiResponse;
-import com.walletapp.ewallet.payload.LoginDTO;
-import com.walletapp.ewallet.payload.SignupDTO;
-import com.walletapp.ewallet.payload.UsernameUpdateRequestDTO;
-import com.walletapp.ewallet.payload.UsernameUpdateResponseDTO;
+import com.walletapp.ewallet.payload.*;
 import com.walletapp.ewallet.repository.UserRepository;
 import com.walletapp.ewallet.repository.UserWalletRepository;
-import com.walletapp.ewallet.service.CustomUserDetails;
 import com.walletapp.ewallet.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -45,14 +41,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String verify(LoginDTO loginDTO) {
+    public ApiResponse verify(LoginDTO loginDTO) {
 
         Authentication authenticate
                 = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
         if (authenticate.isAuthenticated()) {
-            return jwtService.generateToken(loginDTO.getUsername());
+            String jwtToken =  jwtService.generateToken(loginDTO.getUsername());
+            CustomUserDetails userDetails = (CustomUserDetails) authenticate.getPrincipal();
+            String role = userDetails.getUser().getRole().toString();
+            Long id = userDetails.getUser().getId();
+            LoginResponseDTO loginResponseDTO = LoginResponseDTO.builder()
+                    .id(id)
+                    .role(role)
+                    .jwtToken(jwtToken)
+
+                    .build();
+            return new ApiResponse(loginResponseDTO, true, "Logged in successfully");
         }else{
-            return "failure";
+            throw WalletException.builder()
+                    .code("IDE03")
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .build();
         }
     }
 
@@ -71,14 +80,12 @@ public class UserServiceImpl implements UserService {
                     .build();
         }
         signupDTO.setPassword(passwordEncoder.encode(signupDTO.getPassword()));
-        //signupDTO.setBalance(BigDecimal.ZERO); // Initialize balance to zero
         User user = User.builder()
                 .name(signupDTO.getName())
                 .username(signupDTO.getUsername())
                 .phoneNumber(signupDTO.getPhoneNumber())
                 .password(signupDTO.getPassword())
                 .role(signupDTO.getRole())
-                //.balance(signupDTO.getBalance())
                 .build();
         User savedUser = userRepository.save(user);
         if (savedUser.getRole().contains(RoleEnum.USER)) {
@@ -133,7 +140,6 @@ public class UserServiceImpl implements UserService {
                 .oldUsername(oldUsername)
                 .newUsername(username)
                 .build();
-
         return new  ApiResponse(usernameUpdateResponseDTO,true,"Username is updated" );
     }
 }

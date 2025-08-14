@@ -13,5 +13,4 @@ public class ErrorCodeService {
     public String getMessage(String code){
         return environment.getProperty(code, "Unknown error");
     }
-
 }

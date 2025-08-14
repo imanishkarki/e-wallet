@@ -8,9 +8,7 @@ import com.walletapp.ewallet.model.ApiResponse;
 import com.walletapp.ewallet.payload.TransactionDTO;
 import com.walletapp.ewallet.repository.TransactionRepository;
 import com.walletapp.ewallet.repository.UserWalletRepository;
-import com.walletapp.ewallet.service.CustomUserDetails;
 import com.walletapp.ewallet.service.TransactionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,10 +19,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
-    @Autowired
-    private UserWalletRepository userWalletRepository;
-    @Autowired
-    private TransactionRepository transactionRepository;
+
+    private final UserWalletRepository userWalletRepository;
+    private final TransactionRepository transactionRepository;
+
+    public TransactionServiceImpl(UserWalletRepository userWalletRepository, TransactionRepository transactionRepository) {
+        this.userWalletRepository = userWalletRepository;
+        this.transactionRepository = transactionRepository;
+    }
 
     @Override
     public ApiResponse createTransactionDTO(TransactionDTO transactionDTO) {
@@ -39,16 +41,13 @@ public class TransactionServiceImpl implements TransactionService {
 //        if (senderId == null || receiverId == null) {
 //            throw new IllegalArgumentException("Sender and Receiver IDs must not be null");
 //        }
-
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw  WalletException.builder()
                                     .code("IB01")
                                     .status(HttpStatus.BAD_REQUEST)
                                     .build();
         }
-
         UserWallet sender = userWalletRepository.findById(senderId).get();
-
 
         UserWallet receiver = userWalletRepository.findById(receiverId)
                 .orElseThrow(() ->  WalletException.builder()

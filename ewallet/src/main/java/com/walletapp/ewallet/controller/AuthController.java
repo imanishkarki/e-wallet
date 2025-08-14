@@ -23,8 +23,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginDTO loginDTO) {
-        return userService.verify(loginDTO);
+    public ResponseEntity<ApiResponse> login(@RequestBody LoginDTO loginDTO) {
+        return ResponseEntity.ok(userService.verify(loginDTO));
     }
 
     @PutMapping("/update/username")

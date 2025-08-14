@@ -1,11 +1,9 @@
 package com.walletapp.ewallet.service.serviceImpl;
 import com.walletapp.ewallet.entity.User;
 import com.walletapp.ewallet.repository.UserRepository;
-import com.walletapp.ewallet.service.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service
