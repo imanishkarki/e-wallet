@@ -17,11 +17,6 @@ public class CustomUserDetails implements UserDetails {
     public CustomUserDetails() {
     }
 
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return Collections.singleton(new SimpleGrantedAuthority("USER"));
-//    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return user.getRole()
@@ -59,7 +54,6 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-
 
     public User getUser() {
         return this.user;

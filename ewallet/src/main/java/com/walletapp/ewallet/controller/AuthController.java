@@ -31,5 +31,4 @@ public class AuthController {
     public ResponseEntity<ApiResponse> updateUsername(@RequestBody UsernameUpdateRequestDTO usernameUpdateRequestDTO) {
         return ResponseEntity.ok(userService.updateUsername(usernameUpdateRequestDTO));
     }
-
 }
